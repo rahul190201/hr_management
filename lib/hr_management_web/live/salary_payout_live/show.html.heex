@@ -1,0 +1,27 @@
+<.header>
+  Salary payout <%= @salary_payout.id %>
+  <:subtitle>This is a salary_payout record from your database.</:subtitle>
+  <:actions>
+    <.link patch={~p"/salary_payouts/#{@salary_payout}/show/edit"} phx-click={JS.push_focus()}>
+      <.button>Edit salary_payout</.button>
+    </.link>
+  </:actions>
+</.header>
+
+<.list>
+  <:item title="Payout date"><%= @salary_payout.payout_date %></:item>
+  <:item title="Amount"><%= @salary_payout.amount %></:item>
+</.list>
+
+<.back navigate={~p"/salary_payouts"}>Back to salary_payouts</.back>
+
+<.modal :if={@live_action == :edit} id="salary_payout-modal" show on_cancel={JS.patch(~p"/salary_payouts/#{@salary_payout}")}>
+  <.live_component
+    module={HrManagementWeb.SalaryPayoutLive.FormComponent}
+    id={@salary_payout.id}
+    title={@page_title}
+    action={@live_action}
+    salary_payout={@salary_payout}
+    patch={~p"/salary_payouts/#{@salary_payout}"}
+  />
+</.modal>

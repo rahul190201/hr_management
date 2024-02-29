@@ -1,0 +1,28 @@
+<.header>
+  Attendance record <%= @attendance_record.id %>
+  <:subtitle>This is a attendance_record record from your database.</:subtitle>
+  <:actions>
+    <.link patch={~p"/attendance_records/#{@attendance_record}/show/edit"} phx-click={JS.push_focus()}>
+      <.button>Edit attendance_record</.button>
+    </.link>
+  </:actions>
+</.header>
+
+<.list>
+  <:item title="Clock in time"><%= @attendance_record.clock_in_time %></:item>
+  <:item title="Clock out time"><%= @attendance_record.clock_out_time %></:item>
+  <:item title="Date"><%= @attendance_record.date %></:item>
+</.list>
+
+<.back navigate={~p"/attendance_records"}>Back to attendance_records</.back>
+
+<.modal :if={@live_action == :edit} id="attendance_record-modal" show on_cancel={JS.patch(~p"/attendance_records/#{@attendance_record}")}>
+  <.live_component
+    module={HrManagementWeb.AttendanceRecordLive.FormComponent}
+    id={@attendance_record.id}
+    title={@page_title}
+    action={@live_action}
+    attendance_record={@attendance_record}
+    patch={~p"/attendance_records/#{@attendance_record}"}
+  />
+</.modal>

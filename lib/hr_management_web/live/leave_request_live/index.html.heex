@@ -1,0 +1,43 @@
+<.header>
+  Listing Leave requests
+  <:actions>
+    <.link patch={~p"/leave_requests/new"}>
+      <.button>New Leave request</.button>
+    </.link>
+  </:actions>
+</.header>
+
+<.table
+  id="leave_requests"
+  rows={@streams.leave_requests}
+  row_click={fn {_id, leave_request} -> JS.navigate(~p"/leave_requests/#{leave_request}") end}
+>
+  <:col :let={{_id, leave_request}} label="Start date"><%= leave_request.start_date %></:col>
+  <:col :let={{_id, leave_request}} label="End date"><%= leave_request.end_date %></:col>
+  <:col :let={{_id, leave_request}} label="Status"><%= leave_request.status %></:col>
+  <:action :let={{_id, leave_request}}>
+    <div class="sr-only">
+      <.link navigate={~p"/leave_requests/#{leave_request}"}>Show</.link>
+    </div>
+    <.link patch={~p"/leave_requests/#{leave_request}/edit"}>Edit</.link>
+  </:action>
+  <:action :let={{id, leave_request}}>
+    <.link
+      phx-click={JS.push("delete", value: %{id: leave_request.id}) |> hide("##{id}")}
+      data-confirm="Are you sure?"
+    >
+      Delete
+    </.link>
+  </:action>
+</.table>
+
+<.modal :if={@live_action in [:new, :edit]} id="leave_request-modal" show on_cancel={JS.patch(~p"/leave_requests")}>
+  <.live_component
+    module={HrManagementWeb.LeaveRequestLive.FormComponent}
+    id={@leave_request.id || :new}
+    title={@page_title}
+    action={@live_action}
+    leave_request={@leave_request}
+    patch={~p"/leave_requests"}
+  />
+</.modal>

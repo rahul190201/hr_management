@@ -1,0 +1,28 @@
+<.header>
+  Leave request <%= @leave_request.id %>
+  <:subtitle>This is a leave_request record from your database.</:subtitle>
+  <:actions>
+    <.link patch={~p"/leave_requests/#{@leave_request}/show/edit"} phx-click={JS.push_focus()}>
+      <.button>Edit leave_request</.button>
+    </.link>
+  </:actions>
+</.header>
+
+<.list>
+  <:item title="Start date"><%= @leave_request.start_date %></:item>
+  <:item title="End date"><%= @leave_request.end_date %></:item>
+  <:item title="Status"><%= @leave_request.status %></:item>
+</.list>
+
+<.back navigate={~p"/leave_requests"}>Back to leave_requests</.back>
+
+<.modal :if={@live_action == :edit} id="leave_request-modal" show on_cancel={JS.patch(~p"/leave_requests/#{@leave_request}")}>
+  <.live_component
+    module={HrManagementWeb.LeaveRequestLive.FormComponent}
+    id={@leave_request.id}
+    title={@page_title}
+    action={@live_action}
+    leave_request={@leave_request}
+    patch={~p"/leave_requests/#{@leave_request}"}
+  />
+</.modal>

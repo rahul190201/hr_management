@@ -1,0 +1,43 @@
+<.header>
+  Listing Performance reviews
+  <:actions>
+    <.link patch={~p"/performance_reviews/new"}>
+      <.button>New Performance review</.button>
+    </.link>
+  </:actions>
+</.header>
+
+<.table
+  id="performance_reviews"
+  rows={@streams.performance_reviews}
+  row_click={fn {_id, performance_review} -> JS.navigate(~p"/performance_reviews/#{performance_review}") end}
+>
+  <:col :let={{_id, performance_review}} label="Review date"><%= performance_review.review_date %></:col>
+  <:col :let={{_id, performance_review}} label="Rating"><%= performance_review.rating %></:col>
+  <:col :let={{_id, performance_review}} label="Feedback"><%= performance_review.feedback %></:col>
+  <:action :let={{_id, performance_review}}>
+    <div class="sr-only">
+      <.link navigate={~p"/performance_reviews/#{performance_review}"}>Show</.link>
+    </div>
+    <.link patch={~p"/performance_reviews/#{performance_review}/edit"}>Edit</.link>
+  </:action>
+  <:action :let={{id, performance_review}}>
+    <.link
+      phx-click={JS.push("delete", value: %{id: performance_review.id}) |> hide("##{id}")}
+      data-confirm="Are you sure?"
+    >
+      Delete
+    </.link>
+  </:action>
+</.table>
+
+<.modal :if={@live_action in [:new, :edit]} id="performance_review-modal" show on_cancel={JS.patch(~p"/performance_reviews")}>
+  <.live_component
+    module={HrManagementWeb.PerformanceReviewLive.FormComponent}
+    id={@performance_review.id || :new}
+    title={@page_title}
+    action={@live_action}
+    performance_review={@performance_review}
+    patch={~p"/performance_reviews"}
+  />
+</.modal>

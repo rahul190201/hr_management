@@ -1,0 +1,44 @@
+<.header>
+  Listing Expense claims
+  <:actions>
+    <.link patch={~p"/expense_claims/new"}>
+      <.button>New Expense claim</.button>
+    </.link>
+  </:actions>
+</.header>
+
+<.table
+  id="expense_claims"
+  rows={@streams.expense_claims}
+  row_click={fn {_id, expense_claim} -> JS.navigate(~p"/expense_claims/#{expense_claim}") end}
+>
+  <:col :let={{_id, expense_claim}} label="Claim date"><%= expense_claim.claim_date %></:col>
+  <:col :let={{_id, expense_claim}} label="Amount"><%= expense_claim.amount %></:col>
+  <:col :let={{_id, expense_claim}} label="Description"><%= expense_claim.description %></:col>
+  <:col :let={{_id, expense_claim}} label="Status"><%= expense_claim.status %></:col>
+  <:action :let={{_id, expense_claim}}>
+    <div class="sr-only">
+      <.link navigate={~p"/expense_claims/#{expense_claim}"}>Show</.link>
+    </div>
+    <.link patch={~p"/expense_claims/#{expense_claim}/edit"}>Edit</.link>
+  </:action>
+  <:action :let={{id, expense_claim}}>
+    <.link
+      phx-click={JS.push("delete", value: %{id: expense_claim.id}) |> hide("##{id}")}
+      data-confirm="Are you sure?"
+    >
+      Delete
+    </.link>
+  </:action>
+</.table>
+
+<.modal :if={@live_action in [:new, :edit]} id="expense_claim-modal" show on_cancel={JS.patch(~p"/expense_claims")}>
+  <.live_component
+    module={HrManagementWeb.ExpenseClaimLive.FormComponent}
+    id={@expense_claim.id || :new}
+    title={@page_title}
+    action={@live_action}
+    expense_claim={@expense_claim}
+    patch={~p"/expense_claims"}
+  />
+</.modal>

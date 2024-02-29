@@ -1,0 +1,29 @@
+<.header>
+  Expense claim <%= @expense_claim.id %>
+  <:subtitle>This is a expense_claim record from your database.</:subtitle>
+  <:actions>
+    <.link patch={~p"/expense_claims/#{@expense_claim}/show/edit"} phx-click={JS.push_focus()}>
+      <.button>Edit expense_claim</.button>
+    </.link>
+  </:actions>
+</.header>
+
+<.list>
+  <:item title="Claim date"><%= @expense_claim.claim_date %></:item>
+  <:item title="Amount"><%= @expense_claim.amount %></:item>
+  <:item title="Description"><%= @expense_claim.description %></:item>
+  <:item title="Status"><%= @expense_claim.status %></:item>
+</.list>
+
+<.back navigate={~p"/expense_claims"}>Back to expense_claims</.back>
+
+<.modal :if={@live_action == :edit} id="expense_claim-modal" show on_cancel={JS.patch(~p"/expense_claims/#{@expense_claim}")}>
+  <.live_component
+    module={HrManagementWeb.ExpenseClaimLive.FormComponent}
+    id={@expense_claim.id}
+    title={@page_title}
+    action={@live_action}
+    expense_claim={@expense_claim}
+    patch={~p"/expense_claims/#{@expense_claim}"}
+  />
+</.modal>

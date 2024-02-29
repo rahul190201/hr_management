@@ -1,0 +1,42 @@
+<.header>
+  Listing Salary payouts
+  <:actions>
+    <.link patch={~p"/salary_payouts/new"}>
+      <.button>New Salary payout</.button>
+    </.link>
+  </:actions>
+</.header>
+
+<.table
+  id="salary_payouts"
+  rows={@streams.salary_payouts}
+  row_click={fn {_id, salary_payout} -> JS.navigate(~p"/salary_payouts/#{salary_payout}") end}
+>
+  <:col :let={{_id, salary_payout}} label="Payout date"><%= salary_payout.payout_date %></:col>
+  <:col :let={{_id, salary_payout}} label="Amount"><%= salary_payout.amount %></:col>
+  <:action :let={{_id, salary_payout}}>
+    <div class="sr-only">
+      <.link navigate={~p"/salary_payouts/#{salary_payout}"}>Show</.link>
+    </div>
+    <.link patch={~p"/salary_payouts/#{salary_payout}/edit"}>Edit</.link>
+  </:action>
+  <:action :let={{id, salary_payout}}>
+    <.link
+      phx-click={JS.push("delete", value: %{id: salary_payout.id}) |> hide("##{id}")}
+      data-confirm="Are you sure?"
+    >
+      Delete
+    </.link>
+  </:action>
+</.table>
+
+<.modal :if={@live_action in [:new, :edit]} id="salary_payout-modal" show on_cancel={JS.patch(~p"/salary_payouts")}>
+  <.live_component
+    module={HrManagementWeb.SalaryPayoutLive.FormComponent}
+    id={@salary_payout.id || :new}
+    title={@page_title}
+    action={@live_action}
+    salary_payout={@salary_payout}
+    patch={~p"/salary_payouts"}
+  />
+</.modal>
