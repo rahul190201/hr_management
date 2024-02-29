@@ -17,7 +17,7 @@ defmodule HrManagementWeb.Router do
   scope "/", HrManagementWeb do
     pipe_through :browser
 
-    get "/", PageController, :home
+    live "/", DashboardLive.Index, :index
 
     live "/attendance_records", AttendanceRecordLive.Index, :index
     live "/attendance_records/new", AttendanceRecordLive.Index, :new
