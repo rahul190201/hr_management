@@ -10,11 +10,18 @@
 <.table
   id="attendance_records"
   rows={@streams.attendance_records}
-  row_click={fn {_id, attendance_record} -> JS.navigate(~p"/attendance_records/#{attendance_record}") end}
+  row_click={
+    fn {_id, attendance_record} -> JS.navigate(~p"/attendance_records/#{attendance_record}") end
+  }
 >
-  <:col :let={{_id, attendance_record}} label="Clock in time"><%= attendance_record.clock_in_time %></:col>
-  <:col :let={{_id, attendance_record}} label="Clock out time"><%= attendance_record.clock_out_time %></:col>
+  <:col :let={{_id, attendance_record}} label="Clock in time">
+    <%= attendance_record.clock_in_time %>
+  </:col>
+  <:col :let={{_id, attendance_record}} label="Clock out time">
+    <%= attendance_record.clock_out_time %>
+  </:col>
   <:col :let={{_id, attendance_record}} label="Date"><%= attendance_record.date %></:col>
+  <:col :let={{_id, attendance_record}} label="Duration"><%=  %></:col>
   <:action :let={{_id, attendance_record}}>
     <div class="sr-only">
       <.link navigate={~p"/attendance_records/#{attendance_record}"}>Show</.link>
@@ -31,7 +38,12 @@
   </:action>
 </.table>
 
-<.modal :if={@live_action in [:new, :edit]} id="attendance_record-modal" show on_cancel={JS.patch(~p"/attendance_records")}>
+<.modal
+  :if={@live_action in [:new, :edit]}
+  id="attendance_record-modal"
+  show
+  on_cancel={JS.patch(~p"/attendance_records")}
+>
   <.live_component
     module={HrManagementWeb.AttendanceRecordLive.FormComponent}
     id={@attendance_record.id || :new}
